@@ -22,7 +22,21 @@ which generates passwords. It depends on the following tool:
 ### Handle System v7
 You will need a running Handle System installation.
 Details can be found at the [Handle System web site](http://www.handle.net/).
-The handle system needs to be installed with a mysql database. 
+The handle system needs to be installed with a mysql database. The mysql
+database schema is provided. It is: `schema.sql`
+The mysql database has to be used by the handle server. The handle server uses
+a mysql database if following is added in `config.dct` in the `server_config`
+section:
+
+    "storage_type" = "sql"
+    "sql_settings" = {
+      "sql_url" = "jdbc:mysql:///<handle_database>"
+      "sql_driver" = "com.mysql.jdbc.Driver"
+      "sql_login" = "<handle_database_user>"
+      "sql_passwd" = "<handle_database_user_password>"
+      "sql_read_only" = "no"
+    }
+
 
 The handle system needs to know the location of the mysql connector. Create a
 symbolic link inside the handle server lib directory called

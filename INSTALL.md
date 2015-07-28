@@ -36,15 +36,15 @@ The mysql database has to be used by the handle server. The handle server uses
 a mysql database if following is added in `config.dct` in the `server_config`
 section:
 
-```json
+```
 "storage_type" = "sql"
-   "sql_settings" = {
-      "sql_url" = "jdbc:mysql:///<handle_database>"
-      "sql_driver" = "com.mysql.jdbc.Driver"
-      "sql_login" = "<handle_database_user>"
-      "sql_passwd" = "<handle_database_user_password>"
-      "sql_read_only" = "no"
-    }
+"sql_settings" = {
+    "sql_url" = "jdbc:mysql:///<handle_database>"
+    "sql_driver" = "com.mysql.jdbc.Driver"
+    "sql_login" = "<handle_database_user>"
+    "sql_passwd" = "<handle_database_user_password>"
+    "sql_read_only" = "no"
+}
 ```
 
 The handle system needs to know the location of the mysql connector. Create a
@@ -57,6 +57,25 @@ cd $HS_DISTRO_ROOT/lib
 ln -s /usr/share/java/mysql-connector-java.jar 
 ```
 
+**NOTE:** Make sure that in the `config.dct` the index of the different admins
+is different and **NOT** the same. An example is as follows:
+```
+    "server_admins" = (
+      "300:0.NA/10916"
+    )
+
+    "replication_admins" = (
+      "301:0.NA/10916"
+      "302:0.NA/10916"
+    )
+
+    "backup_admins" = (
+      "310:0.NA/10916"
+    )
+```
+Here the indexes are: 300, 301, 302 and 310 with prefix 10916. Index 300 is
+used for the server. Index 301 and 302 are used for replications to other
+handle servers and Index 310 is used for backup purposes.
 
 ### JRuby
 First of all, this software requires JRuby, as it interfaces with the Java

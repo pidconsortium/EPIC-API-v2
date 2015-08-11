@@ -49,7 +49,9 @@ mariadb-server mysql-connector-java
 ### Handle System v7
 You will need a running Handle System installation.
 Details can be found at the [Handle System web site](http://www.handle.net/).
-An option would be to install the software under `opt`:
+An option would be to install the software under `opt` as the user root:
+
+Install hsj as the root user
 
 ```bash
 cd /opt
@@ -89,7 +91,7 @@ ln -s /usr/share/java/mysql-connector-java.jar
 ```
 
 Normally the handle server is case insensitive. But the handles created, updated
-and retrieved via the EPIC API arei case sensitive. Put the handle server in
+and retrieved via the EPIC API are case sensitive. Put the handle server in
 case sensitive mode to be consistent. This is done by modifying following in
 `config.dct` in the `server_config` section:
 

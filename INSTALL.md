@@ -1,14 +1,13 @@
-Installation
-============
+# Installation
 
-Requirements
-------------
+## Requirements
+
 ### compilers
 For the compilation of JRuby several compilers are needed. They can be
 installed in several ways. The compilers needed are:
 
 ```
-git gcc gcc-c++ ant
+git gcc gcc-c++
 ```
 
 ### apache
@@ -17,6 +16,10 @@ The apache/httpd parts needed are:
 
 ```
 apache-tomcat-apis mod_ssl
+```
+**NOTE:** for Centos 7 other packages are needed. They are:
+```
+tomcat-jsp-2.2-api tomcat-servlet-3.0-api mod_ssl
 ```
 
 ### password generator
@@ -27,11 +30,39 @@ which generates passwords. It depends on the following tool:
 pwgen
 ```
 
+### mysql
+The handle system and the EPIC-API talk directly to a mysql database. A
+mysql-server needs to be installed. The following packages are needed:
+
+```
+mysql-server mysql-connector-java
+```
+
+The mysql database schema is provided. It is: `schema.sql`. Create a database
+with the supplied schema. Give read/write acces to a dedicated user.
+
+**NOTE:** for Centos 7 other packages are needed. They are:
+```
+mariadb-server mysql-connector-java
+```
+
 ### Handle System v7
 You will need a running Handle System installation.
 Details can be found at the [Handle System web site](http://www.handle.net/).
-The handle system needs to be installed with a mysql database. The mysql
-database schema is provided. It is: `schema.sql`
+An option would be to install the software under `opt`:
+
+```bash
+cd /opt
+tar -xvf hsj-7.3.1.tar --no-same-owner
+ln -s /opt/hsj-7.3.1  hsj
+export PATH=$PATH:/opt/hsj/bin/
+```
+
+This gives that `HS_DISTRO_ROOT` == `/opt/hsj`.
+
+The configuration for the handle server could be put under `$HOME/etc`. The
+handle server normally run's as an non-privileged user.
+
 The mysql database has to be used by the handle server. The handle server uses
 a mysql database if following is added in `config.dct` in the `server_config`
 section:
@@ -56,6 +87,16 @@ symbolic link inside the handle server lib directory called
 cd $HS_DISTRO_ROOT/lib
 ln -s /usr/share/java/mysql-connector-java.jar 
 ```
+
+Normally the handle server is case insensitive. But the handles created, updated
+and retrieved via the EPIC API arei case sensitive. Put the handle server in
+case sensitive mode to be consistent. This is done by modifying following in
+`config.dct` in the `server_config` section:
+
+```
+"case_sensitive" = "yes"
+```
+
 
 **NOTE:** Make sure that in the `config.dct` the index of the different admins
 is different and **NOT** the same. An example is as follows:
@@ -157,8 +198,8 @@ jruby -S gem install  rackful -v 0.1.4
 ```
 
 
-Installation
-------------
+## Installation
+
 The EPIC API is tightly coupled the handle server which it connects to. It has
 to be run as the same user as the handle server is running. The EPIC API is
 installed as follows:
@@ -191,40 +232,56 @@ cd epic_v2_prod_<prefix>
 ln -s <directory_handle_service>/hsj/lib hsj
 ```
 
-Configuration
--------------
+## Configuration
 
 The web service comes preconfigured for HTTP Digest authentication.
 You will need to create two configuration files for this to work, though:
 
 ### General configuration
 The default installation expects some configuration information in file
-`config.rb`. You will find a sample configuration file called
-`config.rb.example` in the distribution. Copy or rename this file to `config.rb`
-and edit it to your situation:
+`config.rb` and `config.ru`. You will find a sample configuration files called
+`config.rb.example` and `config.ru.example` in the distribution. Copy these
+files to working config's:
 
 ```bash
 cp -a config.rb.example config.rb
-$EDITOR config.rb
+cp -a config.ru.example config.ru
 ```
 
-The config.rb has the connection details to the database for instance. It has
-been developed against mysql. So that is what supported. The first line in
-config.ru can have the port on which the epic server listens. It is in the
-format of:
+#### config.rb
+The following parameters have to be adapted in the `config.rb`:
+* REALM. The realm name used in basic and digest authentication.
+* OPAQUE. This is a radom hex string of 32 characters used for digest authentication.
+* SEQUEL_CONNECTION_ARGS. Fill here YOUR_DATABASE, YOUR_USER and YOUR_PASSWD.
+* LOG_SETTINGS. Modify as you like.
+* NO_DELETE. A regular expression to define for which prefix deletes are prohibited.
+* ENFORCED_PROFILES. The default profile should be "nodelete".
+* DEFAULT_GENERATOR. The default generator for suffixes. should be "uuid".
+There is more info about these parameters in the `config.rb` file.
 
+#### config.ru
+The following lines have to be adapted in the `config.ru`: 
+* The first line in config.ru can have the port on which the epic server
+listens. It is in the format of:
 ```
 #\ --port 9292 --server mizuno
 ```
+* If Apache is used modify config.ru to have the correct url returned:
 
-The default installation expects some configuration information in file
-`config.ru`. You will find a sample configuration file called
-`config.ru.example` in the distribution. Copy or rename this file to
-`config.ru` and edit it to your situation:
-
-```bash
-cp -a config.ru.example config.ru
-$EDITOR config.ru
+```ruby
+# When run behind an Apache reverse proxy server, the original request scheme
+# (http or https) gets lost. This config works around this for epic_1.0.0:
+#use Rack::Config do
+#  |env|
+#  env['HTTP_X_FORWARDED_SSL'] = 'on'
+#end
+use Rack::Config do
+  |env|
+   env.keys.each do
+     |key|
+       env.delete(key) if /^http_x_forwarded_/i === key
+   end
+end
 ```
 
 ### User accounts
@@ -238,7 +295,7 @@ $EDITOR users.rb
 ```
 
 The passwords are hashed in the field "digest". It is the MD5 checksum of
-"<username>:EPIC:<password>".
+"<username>:<REALM>:<password>".
 
 For the communication with the handle service a key has to be present in the
 `secrets` directory. It must have the format `300_0_NA_prefix`
@@ -264,26 +321,8 @@ Apache acts as a proxy. HTTPS traffic is routed to localhost port 9292. This
 is the port where the epic server v2 listens. So everything which starts with /v2/ is
 routed/proxied to the EPIC service.
 
-If Apache is used modify config.ru to have the correct url returned:
+## Running!
 
-```
-# When run behind an Apache reverse proxy server, the original request scheme
-# (http or https) gets lost. This config works around this for epic_1.0.0:
-#use Rack::Config do
-#  |env|
-#  env['HTTP_X_FORWARDED_SSL'] = 'on'
-#end
-use Rack::Config do
-  |env|
-   env.keys.each do
-     |key|
-       env.delete(key) if /^http_x_forwarded_/i === key
-   end
-end
-```
-
-Running!
---------
 
 At this point, you should be able to start the web service:
 
@@ -291,7 +330,7 @@ At this point, you should be able to start the web service:
 rackup
 ```
 
-By default, this will start a Webrick web server, listening to port 9292.
+By default, this will start a mizuno web server, listening to port 9292.
 
 If you would like to use another web server, another port number, another
 authentication method, then check out the Rack documentation, and start editing

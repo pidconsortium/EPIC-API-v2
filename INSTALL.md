@@ -60,10 +60,17 @@ ln -s /opt/hsj-7.3.1  hsj
 export PATH=$PATH:/opt/hsj/bin/
 ```
 
-This gives that `HS_DISTRO_ROOT` == `/opt/hsj`.
+This gives that `HS_DISTRO_ROOT == /opt/hsj`.
 
 The configuration for the handle server could be put under `$HOME/etc`. The
 handle server normally run's as an non-privileged user.
+
+Perform the setup of the server as the non-privileged user (see also
+documentation at the [Handle System web site](http://www.handle.net/):
+```
+export PATH=$PATH:/opt/hsj/bin/
+hdl-setup-server $HOME/etc
+```
 
 The mysql database has to be used by the handle server. The handle server uses
 a mysql database if following is added in `config.dct` in the `server_config`

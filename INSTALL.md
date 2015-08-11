@@ -257,6 +257,7 @@ The following parameters have to be adapted in the `config.rb`:
 * NO_DELETE. A regular expression to define for which prefix deletes are prohibited.
 * ENFORCED_PROFILES. The default profile should be "nodelete".
 * DEFAULT_GENERATOR. The default generator for suffixes. should be "uuid".
+
 There is more info about these parameters in the `config.rb` file.
 
 #### config.ru
@@ -313,7 +314,7 @@ The file /etc/httpd/conf.d/ssl.conf has the following addition.
 ```
 ProxyPass /v2/ http://localhost:9292/
 ProxyPassReverse /v2/ http://localhost:9292/
-ProxyPassReverseCookieDomain localhost:9922 <fully_qualified_hostname>
+ProxyPassReverseCookieDomain localhost:9292 <fully_qualified_hostname>
 ProxyPassReverseCookiePath / /v2/
 ```
 

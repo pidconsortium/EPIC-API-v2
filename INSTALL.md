@@ -65,7 +65,7 @@ This gives that `HS_DISTRO_ROOT == /opt/hsj`.
 The configuration for the handle server could be put under `$HOME/etc`. The
 handle server normally run's as an non-privileged user.
 
-Perform the setup of the server as the non-privileged user (see also
+Perform the setup of the server as the non-privileged user. See also
 documentation at the [Handle System web site](http://www.handle.net/):
 ```
 export PATH=$PATH:/opt/hsj/bin/
@@ -350,3 +350,7 @@ documentation that hopefully gets you started.
 At this time a https request can be done to: `https://<fully_qualified_hostname>/v2/handles/`
 
 
+**NOTE:** Make sure that the firewall on your node/firewall allows following:
+* outgoing connections for all ports
+* incoming connections on ports 443 and the http and tcp ports defined in the
+handle config. The defaults are 8000 and 2641.

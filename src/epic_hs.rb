@@ -12,11 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'java'
 require 'hsj/handle.jar'
 require 'hsj/cnriutil.jar'
-
 
 module EPIC
 
@@ -27,28 +25,57 @@ module EPIC
 # wrap around bits of the Handle client library.
 module HS
 
+# A verion check of the Handle Liberares 
+HDL_VERSION = Java::NetHandleServer::Version
+HSJ_VERSION = HDL_VERSION.version[0].to_i()
+unless (HSJ_VERSION == 8 || HSJ_VERSION == 7)
+    abort("VERSION #{HSJ_VERSION.to_s()} OF HANDLE LIBRARIES IS NOT SUPPORTED")
+end
+
+
 
 # A shorthand for the Java +net.handle.hdllib+ package.
 HDLLIB = Java::NetHandleHdllib
-module JavaIO
-  include_package "java.io"
-end
 
 # All permissions in the Handle System, indexed by integers.
-PERMS_BY_I = [
-  'add_handle',          #  0
-  'delete_handle',       #  1
-  'add_naming_auth',     #  2
-  'delete_naming_auth',  #  3
-  'modify_value',        #  4
-  'remove_value',        #  5
-  'add_value',           #  6
-  'read_value',          #  7
-  'modify_admin',        #  8
-  'remove_admin',        #  9
-  'add_admin',           # 10
-  'list_handles'         # 11
-]
+DEFAULT_V7_PERMS = {
+          :add_handle         => true,
+          :delete_handle      => true,
+          :add_naming_auth    => false,
+          :delete_naming_auth => false,
+          :modify_value       => true,
+          :remove_value       => true,
+          :add_value          => true,
+          :read_value         => true,
+          :modify_admin       => true,
+          :remove_admin       => true,
+          :add_admin          => true,
+          :list_handles       => false
+      }
+
+DEFAULT_V8_PERMS  = {
+           :add_handle         => true,
+           :delete_handle      => true,
+           :add_derived_prefix    => false,
+           :delete_derived_prefix => false,
+           :modify_value       => true,
+           :remove_value       => true,
+           :add_value          => true,
+           :modify_admin       => true,
+           :remove_admin       => true,
+           :add_admin          => true,
+           :read_value         => true,
+           :list_handles       => false
+       }
+
+# There are different constants for the permissions in version 8
+if HSJ_VERSION == 8
+    PERMS_BY_I = DEFAULT_V8_PERMS.keys
+    DEFAULT_PERMS = DEFAULT_V8_PERMS
+else
+    PERMS_BY_I = DEFAULT_V7_PERMS.keys
+    DEFAULT_PERMS = DEFAULT_V7_PERMS
+end
 
 # All permissions in the Handle System, indexed by symbols.
 PERMS_BY_S = Hash[ PERMS_BY_I.each_with_index.to_a ]
@@ -255,7 +282,7 @@ class << self
             userInfo[:handle].to_java_bytes,
             userInfo[:index],
             HDLLIB::Util.getPrivateKeyFromFileWithPassphrase(
-              JavaIO::File.new(
+               Java::JavaIo::File.new(
                 'secrets/' + (
                   userInfo[:index].to_s + ':' + userInfo[:handle]
                 ).gsub(/\W+/, '_')

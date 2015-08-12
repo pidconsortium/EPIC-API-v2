@@ -263,24 +263,11 @@ module EPIC
         admin_record = HandleValue.new
         admin_record.idx = idx
         admin_record.type = 'HS_ADMIN'
-        admin_record.parsed_data = {
+	admin_record.parsed_data = {
           :adminId => user_info[:handle_create] || user_info[:handle],
           :adminIdIndex => user_info[:index_create] || user_info[:index],
-          :perms => {
-          :add_handle         => true,
-          :delete_handle      => true,
-          :add_naming_auth    => false,
-          :delete_naming_auth => false,
-          :modify_value       => true,
-          :remove_value       => true,
-          :add_value          => true,
-          :read_value         => true,
-          :modify_admin       => true,
-          :remove_admin       => true,
-          :add_admin          => true,
-          :list_handles       => false
-          }
-        }
+          :perms => HS::DEFAULT_PERMS
+         }
         values << admin_record
       end
       values

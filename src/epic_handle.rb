@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'epic_json_response.rb'
 require 'epic_collection.rb'
 require 'epic_sequel.rb'
 require 'epic_hs.rb'
@@ -157,7 +158,20 @@ module EPIC
           end
           HS.create_handle(self.handle, new_values, request.env['REMOTE_USER'])
           LOGGER.info_httpevent("Handle created", "PUT")
-          raise Rackful::HTTP201Created, self.path
+          accept_keys = request.accept.keys
+          json_resp = false
+          accept_keys.each do |key|
+             if key == 'application/json'
+               if request.accept[key]  == 1
+                  json_resp = true
+               end
+             end
+          end
+          if json_resp == true
+            Eresponse.new response, self
+         else
+           raise Rackful::HTTP201Created, self.path
+         end
         else
           old_values = self.values
           Profile.profiles.each do

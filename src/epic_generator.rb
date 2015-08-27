@@ -45,7 +45,7 @@ class Generator < Resource
 
   # @!method generate(request)
   #   @param [Rackful::Request] request
-class JUUID < Generator
+  class JUUID < Generator
 
     def to_rackful
       {
@@ -69,7 +69,7 @@ class JUUID < Generator
   # @!method generate(request)
   #   @param [Rackful::Request] request
 
-class GWDGJUUID < Generator
+  class GWDGJUUID < Generator
 
     def to_rackful
       {
@@ -92,7 +92,7 @@ class GWDGJUUID < Generator
       prefix + java.util.UUID.randomUUID.to_s() + suffix
     end
 
-  end # class JUUID < Generator
+  end # class GWDGJUUID < Generator
 
 
 

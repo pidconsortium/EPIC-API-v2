@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'epic_debugger.rb'
 require 'epic_collection.rb'
 require 'epic_sequel.rb'
 
@@ -23,14 +24,14 @@ class Handles < Collection
 
 
   def prefix
-    LOGGER.debug_method(self, caller)
-    @epic_handles_prefix ||= File::basename(path.unslashify).to_path.unescape
+      Debugger.instance.debug("epic_handles.rb:#{__LINE__}:prefix")
+     @epic_handles_prefix ||= File::basename(path.unslashify).to_path.unescape
   end
 
 
   # @todo better implementation (server-side data retention) for streaming responses.
   def each
-    LOGGER.debug_method(self, caller)
+    Debugger.instance.debug("epic_handles.rb:#{__LINE__}:each")
     query = Rackful::Request.current.GET.dup
     if limit = query['limit']
       query.delete('limit')
@@ -79,12 +80,12 @@ class Handles < Collection
   # Handles an HTTP/1.1 PUT request.
   # @see Rackful::Resource#do_METHOD
   def do_POST request, response
-    LOGGER.debug_method(self, caller, response)
+    Debugger.instance.debug("epic_handles.rb:#{__LINE__}:do_POST")
     generator_name = request.GET['generator'] || EPIC::DEFAULT_GENERATOR
     unless generator = request.resource_factory["/generators/#{generator_name}"]
       raise Rackful::HTTP400BadRequest, "No such generator: '#{generator_name}'"
     end
-    LOGGER.info_httpevent("New Handle created", "POST")
+    Debugger.instance.debug("epic_handles.rb:#{__LINE__}:creating PID | POST")
     pid_suffix = escape_path( generator.generate( request ) )
     handle = request.resource_factory["/handles/#{prefix}/#{pid_suffix}"]
     handle.do_PUT( request, response )

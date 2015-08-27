@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'epic_debugger.rb'
 require 'epic_json_response.rb'
 require 'epic_collection.rb'
 require 'epic_sequel.rb'
@@ -41,7 +42,7 @@ module EPIC
     # The entire handle, {#prefix} <tt>"/"</tt> {#suffix}
     # @return [String]
     def handle
-      LOGGER.debug_method(self, caller)
+      Debugger.instance.debug("epic_handle.rb:#{__LINE__}:handle")
       "#{prefix}/#{suffix}"
     end
 
@@ -51,7 +52,7 @@ module EPIC
 
     def initialize path, handle_values = nil
       super path
-      LOGGER.debug_method(self, caller, [path, handle_values])
+      Debugger.instance.debug("epic_handle.rb:#{__LINE__}:initialze")
       unless matches = %r{([\d]+(?:\.[^/]+)*)/([^/]+)\z}.match(path)
         raise "Unexpected path: #{path}"
       end
@@ -70,7 +71,7 @@ module EPIC
         dbrows || DB.instance.all_handle_values(self.handle)
       ).collect { |row| HandleValue.new row }
         if rows.size < 1
-          LOGGER.warn("Handle: #{self.handle} not found")
+          Debugger.instance.debug("epic_handle.rb:#{__LINE__}:Handle: #{self.handle} not found")
         end
       @values ||=  rows
     end
@@ -152,12 +153,12 @@ module EPIC
           Profile.profiles.each do
             |profile_name, profile|
             if tmp = profile.create( request, self.prefix, self.suffix, new_values )
-              LOGGER.debug("Profile #{profile_name} enforced for Creating Handle.")
-              new_values = tmp
+               Debugger.instance.debug("epic_handle.rb:#{__LINE__}:Profile #{profile_name} enforced for Creating Handle.")
+               new_values = tmp
             end
           end
           HS.create_handle(self.handle, new_values, request.env['REMOTE_USER'])
-          LOGGER.info_httpevent("Handle created", "PUT")
+          Debugger.instance.debug("epic_handle.rb:#{__LINE__}:Handle created | PUT")
           accept_keys = request.accept.keys
           json_resp = false
           accept_keys.each do |key|
@@ -177,16 +178,17 @@ module EPIC
           Profile.profiles.each do
             |profile_name, profile|
             if tmp = profile.update( request, self.prefix, self.suffix, old_values, new_values )
-              LOGGER.debug("Profile #{profile_name} enforced for Updating Handle.")
+              Debugger.instance.debug("epic_handle.rb:#{__LINE__}:Profile #{profile_name} enforced for Updating Handle.")
               new_values = tmp
             end
           end
           HS.update_handle(self.handle, self.values, new_values, request.env['REMOTE_USER'])
           @values = nil
-          LOGGER.info_httpevent("Handle updated", "PUT")
+          Debugger.instance.debug("epic_handle.rb:#{__LINE__}:Handle updated | PUT")
           response.status = status_code(:no_content)
         end
       ensure
+        Debugger.instance.debug("-----------------------------------------------------")
         self.unlock
       end
     end
@@ -195,13 +197,13 @@ module EPIC
     # @todo This documentation sucks!
     def destroy request, response
       Profile.profiles.each do |profile_name, profile|
-        LOGGER.debug("Profile #{profile_name} enforced for Deleting Handle.")
+        Debugger.instance.debug("epic_handle.rb:#{__LINE__}:Profile #{profile_name} enforced for Deleting Handle.")
         profile.delete request, self.prefix, self.suffix, self.values
       end
       HS.delete_handle self.handle, request.env['REMOTE_USER']
       @values = nil
       response.status = status_code(:no_content)
-      LOGGER.info_httpevent("Handle deleted", "DELETE")
+      Debugger.instance.debug("epic_handle.rb:#{__LINE__}:Handle deleted | DELETE")
       nil
     end
 
@@ -335,10 +337,10 @@ module EPIC
         value.pub_write.inspect
       end.to_s
       retval = [ retval ].pack('H*')
-      LOGGER.debug('Handle.get_etag sent HTTP-etag: ' + '"' + Base64.strict_encode64(retval)[0..-3] + '" to client')
-      '"' + Base64.strict_encode64(retval)[0..-3] + '"'
+       Debugger.instance.debug("epic_handle.rb:#{__LINE__}:Handle.get_etag sent HTTP-etag: " + "'" + Base64.strict_encode64(retval)[0..-3] + "' to client")
+       "'" + Base64.strict_encode64(retval)[0..-3] + "'"     
     end
-
+  
   end # class Handle
 
   class Handle::XHTML < Rackful::XHTML

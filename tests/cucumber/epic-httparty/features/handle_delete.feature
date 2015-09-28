@@ -1,4 +1,4 @@
-Feature: EPIC v2 Test the Deletion of Handles
+Feature: EPIC-API-v2 test for deleting PIDs
 
 Scenario: Create a Handle with POST and create it afterwards
 	Given I use service "http://127.0.0.1:8082"

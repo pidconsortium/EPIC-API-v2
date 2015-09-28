@@ -1,4 +1,4 @@
-Feature: EPIC v2 Test the Update of Handles
+Feature: EPIC-API-v2 test for updating PIDs
 
 Scenario: Create a Handle and Update it with PUT
   Given I use service "http://127.0.0.1:8082"

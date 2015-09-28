@@ -3,7 +3,7 @@ require_relative '../src/epic_checkconfig.rb'
 require_relative '../config.rb'
 require_relative '../secrets/users.rb'
 
-puts "---- EPIC v2 API CONFIG Check -----\n\n"
+puts "---- EPIC-API-v2 CONFIG Check -----\n\n"
 puts "Checking API Config-File for validity...\n\n"
 
 pass = true

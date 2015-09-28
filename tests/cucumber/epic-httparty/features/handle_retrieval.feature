@@ -1,4 +1,4 @@
-Feature: EPIC v2 Handle Retrieval
+Feature: EPIC-API-v2 test for retrieving PIDs
 The EPIC Service is asked for Handles that are existing and not existing
 
 Scenario Outline: Retrieve exiting and not existing Handles

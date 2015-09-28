@@ -19,7 +19,7 @@ rdoc --debug \
   --main epic.rb \
   --charset=UTF-8 \
   --encoding=UTF-8 \
-  --title=EPIC \
+  --title=ePIC \
   --tab-width=2 \
   --format=hanna \
   --all \
@@ -34,7 +34,7 @@ rdoc --debug \
 # rdoc \
   # --main dav.rb \
   # --encoding=UTF-8 \
-  # --title=EPIC \
+  # --title=ePIC \
   # --format=darkfish \
   # --output=rdoc \
   # --exclude=rdoc \

@@ -1,4 +1,4 @@
-Feature: EPIC v2 Prefix Retrieval
+Feature: EPIC-API-v2 test for retrieving prefixes
 The EPIC Service is asked about all prefixes and the lowest one is read
 
 Scenario: Retrieve all prefixes and check the prefix with the lowest value against a given value

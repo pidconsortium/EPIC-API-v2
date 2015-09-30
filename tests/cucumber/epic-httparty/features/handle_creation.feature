@@ -1,4 +1,4 @@
-Feature: EPIC v2 Test the Creation of Handles
+Feature: EPIC-API-v2 test for creating PIDs
 
 Scenario: Create a Handle with POST and data in JSON-format
   Given I use service "http://127.0.0.1:8082"

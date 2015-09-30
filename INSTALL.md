@@ -329,7 +329,7 @@ ProxyPassReverseCookiePath / /v2/
 
 Apache acts as a proxy. HTTPS traffic is routed to localhost port 9292. This 
 is the port where the epic server v2 listens. So everything which starts with /v2/ is
-routed/proxied to the EPIC service.
+routed/proxied to the ePIC web service.
 
 ## Running!
 

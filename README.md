@@ -1,12 +1,12 @@
-EPIC PID Web Service version 2
+ePIC PID Web Service version 2
 ==============================
 
-This is [EPIC's](http://www.pidconsortium.eu/) new Web Service
+This is [ePIC's](http://www.pidconsortium.eu/) Web Service
 for PID management.
 
 The latest version of the software is available at github:
 https://github.com/pidconsortium/EPIC-API-v2/).
-The documentation is hosted on the EPIC website: http://doc.pidconsortium.eu/
+The documentation is hosted on the ePIC website: http://doc.pidconsortium.eu/
 
 Download
 --------

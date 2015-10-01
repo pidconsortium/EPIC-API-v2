@@ -15,16 +15,34 @@ class Debugger
   
    
    def log(msg)
-	open(@debug_path, 'a') { |dfile|  dfile.puts msg }
+ 	request = Rackful::Request.current
+        env = request.instance_variable_get(:@env)
+        now = Time.now
+        if (env != nil)
+                output_msg = "#{env['REQUEST_METHOD']} from #{env['REMOTE_USER']}@#{env['REMOTE_ADDR']} [" +
+                        now.strftime("%d/%b/%Y:%H:%M:%S %z") + "] on #{env['PATH_INFO']}  >> #{msg}."
+        else
+                output_msg = "initialization..."
+        end
+
+	open(@debug_path, 'a') { |dfile|  dfile.puts output_msg }
    end
 
- 
    def debug(msg)
+   	request = Rackful::Request.current
+   	env = request.instance_variable_get(:@env)
+   	now = Time.now
+   	if (env != nil)
+       		output_msg = "#{env['REQUEST_METHOD']} from #{env['REMOTE_USER']}@#{env['REMOTE_ADDR']} [" +
+           		now.strftime("%d/%b/%Y:%H:%M:%S %z") + "] on #{env['PATH_INFO']}  >> #{msg}."
+   	else
+   		output_msg = "initialization..."
+  	end
+   	
+	if @enabled == true
+        	  open(@debug_path, 'a') { |dfile|  dfile.puts output_msg }
+     	end
 
-     if @enabled == true
-	  open(@debug_path, 'a') { |dfile|  dfile.puts msg }
-     end
-   
    end
 
    private_class_method :new

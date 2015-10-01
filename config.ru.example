@@ -98,10 +98,6 @@ use Rack::Auth::Basic do
         [ username, EPIC::REALM, password ] * ':'
       ).to_s
     )
-  # TODO: I think the following 3 lines are redundant, because rack already logs this. --PvB
-  unless result
-  	LOGGER.warn("Unauthorized. #{username} provided wrong password/username.")
-  end
   result
 end
 

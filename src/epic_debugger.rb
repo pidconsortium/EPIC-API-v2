@@ -19,8 +19,8 @@ class Debugger
         env = request.instance_variable_get(:@env)
         now = Time.now
         if (env != nil)
-                output_msg = "#{env['REQUEST_METHOD']} from #{env['REMOTE_USER']}@#{env['REMOTE_ADDR']} [" +
-                        now.strftime("%d/%b/%Y:%H:%M:%S %z") + "] on #{env['PATH_INFO']}  >> #{msg}."
+                output_msg = "[" +
+                        now.strftime("%d/%b/%Y:%H:%M:%S %z") + "]  #{env['REQUEST_METHOD']} from #{env['REMOTE_USER']}@#{env['REMOTE_ADDR']} on #{env['PATH_INFO']}  >> #{msg}."
         else
                 output_msg = "initialization..."
         end
@@ -33,9 +33,9 @@ class Debugger
    	env = request.instance_variable_get(:@env)
    	now = Time.now
    	if (env != nil)
-       		output_msg = "#{env['REQUEST_METHOD']} from #{env['REMOTE_USER']}@#{env['REMOTE_ADDR']} [" +
-           		now.strftime("%d/%b/%Y:%H:%M:%S %z") + "] on #{env['PATH_INFO']}  >> #{msg}."
-   	else
+   	 output_msg = "[" +                        
+                 now.strftime("%d/%b/%Y:%H:%M:%S %z") + "]  #{env['REQUEST_METHOD']} from #{env['REMOTE_USER']}@#{env['REMOTE_ADDR']} on #{env['PATH_INFO']}  >> #{msg}."
+        else
    		output_msg = "initialization..."
   	end
    	

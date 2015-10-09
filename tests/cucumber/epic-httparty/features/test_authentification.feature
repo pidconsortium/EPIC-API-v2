@@ -1,7 +1,7 @@
-Feature: EPIC v2 Authentication Test
+Feature: EPIC-API-v2 test for Basic Authentication
 We test, if the authentication works.
 
-Scenario: Perform a GET on /handles with out any authentication
+Scenario: Perform a GET on /handles without any authentication
   Given I use service "http://127.0.0.1:8082"
   When I accept JSON
 	And I ignore all authentication

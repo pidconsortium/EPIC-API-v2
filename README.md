@@ -1,25 +1,21 @@
-EPIC PID Web Service version 2
+ePIC PID Web Service version 2
 ==============================
 
-This is [EPIC's](http://www.pidconsortium.eu/) new Web Service
+This is [ePIC's](http://www.pidconsortium.eu/) Web Service
 for PID management.
 
-The latest version of this documentation is always available
-[here, as GitHub pages](http://catchplus.github.com/EPIC-API-v2/).
+The latest version of the software is available at github:
+https://github.com/pidconsortium/EPIC-API-v2/).
+The documentation is hosted on the ePIC website: http://doc.pidconsortium.eu/
 
 Download
 --------
 
 The latest version of the software can be downloaded from GitHub
 
-*   [as a zipfile](https://github.com/CatchPlus/EPIC-API-v2/zipball/master)
-*   or [as a tarball](https://github.com/CatchPlus/EPIC-API-v2/tarball/master)
-
-The latest version of the documentation can be downloaded (for offline browsing)
-
-*   [as a zipfile](https://github.com/CatchPlus/EPIC-API-v2/zipball/gh-pages)
-*   or [as a tarball](https://github.com/CatchPlus/EPIC-API-v2/tarball/gh-pages)
+*   [as a zipfile](https://github.com/pidconsortium/EPIC-API-v2/zipball/master)
+*   or [as a tarball](https://github.com/pidconsortium/EPIC-API-v2/tarball/master)
 
 Or you use the git command to get the complete tree
 
-* git clone git://github.com/CatchPlus/EPIC-API-v2.git
+* git clone git://github.com/pidconsortium/EPIC-API-v2.git

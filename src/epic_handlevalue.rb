@@ -173,16 +173,18 @@ class HandleValue # < Resource
       self.ttl_type  = dbrow[:ttl_type].to_i
       self.ttl       = dbrow[:ttl].to_i
       self.timestamp = dbrow[:timestamp].to_i
-      @handle_value.setReferences(
-        dbrow[ :refs ].split("\t").collect do
-          |ref|
-          ref = ref.split ':', 2
-          HS::HDLLIB::ValueReference.new(
-            ref[1].to_java_bytes,
-            ref[0].to_i
-          )
-        end.to_java HS::HDLLIB::ValueReference
-      )
+      if dbrow[:refs]
+        @handle_value.setReferences(
+          dbrow[ :refs ].split("\t").collect do
+            |ref|
+            ref = ref.split ':', 2
+            HS::HDLLIB::ValueReference.new(
+              ref[1].to_java_bytes,
+              ref[0].to_i
+            )
+          end.to_java HS::HDLLIB::ValueReference
+        )
+      end  
       self.admin_read  = dbrow[:admin_read]  && 0 != dbrow[:admin_read]
       self.admin_write = dbrow[:admin_write] && 0 != dbrow[:admin_write]
       self.pub_read    = dbrow[:pub_read]    && 0 != dbrow[:pub_read]

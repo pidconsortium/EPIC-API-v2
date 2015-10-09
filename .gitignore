@@ -17,6 +17,7 @@ secrets/users.rb
 .project
 .settings
 .build
+.buildpath
 
 # Yard:
 .yardoc
@@ -24,3 +25,5 @@ secrets/users.rb
 # Auto generated docs:
 public/docs/epic
 public/docs/yard
+
+hsj

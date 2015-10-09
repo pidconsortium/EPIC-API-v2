@@ -35,7 +35,7 @@ unset JDK_HOME
 unset SDK_HOME
 
 
-# Check if EPIC is already running and present options
+# Check if EPIC-API-v2 is already running and present options
 if [ -f $TMP_FOLDER/epic_standalone.pid ]
 then
     echo -e  "\n----- PID-File of EPIC-API-v2 was found --- \n"

@@ -69,7 +69,7 @@ class DB
     end
     ds = self.pool[:handles].select(:handle).distinct
     if prefix
-      ds = ds.filter( '`handle` LIKE ?', prefix.to_s + '/%' )
+      ds = ds.filter( 'handle LIKE ?', prefix.to_s + '/%' )
     end
     if 0 < limit
       ds = ds.limit( limit, (page - 1) * limit )
@@ -102,12 +102,12 @@ class DB
         select(:handle).
         distinct
       if 'handle' === type
-        tmp_ds = tmp_ds.filter( '`handle` LIKE ?', prefix.to_s + '/' + value )
+        tmp_ds = tmp_ds.filter( 'handle LIKE ?', prefix.to_s + '/' + value )
       else
       	tmp_ds = tmp_ds.
-          filter( '`handle` LIKE ?', prefix.to_s + '/%' ).
-          filter( '`type` = ?', type ).
-          filter( '`data` LIKE ?', value )
+          filter( 'handle LIKE ?', prefix.to_s + '/%' ).
+          filter( 'type = ?', type ).
+          filter( 'data LIKE ?', value )
       end
       ds = ds ? ds.where( :handle => tmp_ds ) : tmp_ds
     end
@@ -126,7 +126,8 @@ class DB
   def all_handle_values handle
     Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:all_handle_values")
     begin
-      ds = self.pool[:handles].where( :handle => handle ).all
+      myquery = self.pool[:handles].where( :handle => handle )
+      ds = myquery.all
     rescue
       msg = "APPLICATION STOPPED: Cannot connect to database!"
       Debugger.instance.log(msg)
@@ -150,7 +151,7 @@ class DB
     ### SELECT AUTO_INCREMENT FROM information_schema.tables WHERE table_name = 'pidsequence';
     ###self.pool['INSERT INTO pidsequence (processID) VALUE (NULL); SELECT LAST_INSERT_ID()'].get
     ###self.pool['SELECT AUTO_INCREMENT FROM information_schema.tables WHERE table_name = "pidsequence"].get
-    self.pool["INSERT INTO `pidsequence` (`processID`) VALUES (NULL)"].insert
+    self.pool["INSERT INTO pidsequence (processID) VALUES (NULL)"].insert
   end
 
 

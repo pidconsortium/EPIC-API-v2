@@ -43,6 +43,59 @@ class Generator < Resource
   # @!method generate(request)
   #   @param [Rackful::Request] request
 
+  # @!method generate(request)
+  #   @param [Rackful::Request] request
+  class JUUID < Generator
+
+    def to_rackful
+      {
+        'Description' => 'This generator uses JUUIDs to guarantee the uniqueness of created Handles.',
+        'Query parameters' => {
+          :prefix => 'Optional: a string of UTF-8 encoded printable unicode characters to put before the UUID.',
+          :suffix => 'Optional: a string of UTF-8 encoded printable unicode characters to put after the UUID.'
+        },
+      }
+    end
+
+    def generate request
+
+      prefix = request.GET['prefix'] || ''
+      suffix = request.GET['suffix'] || ''
+      prefix + java.util.UUID.randomUUID.to_s() + suffix
+    end
+
+  end # class JUUID < Generator
+
+  # @!method generate(request)
+  #   @param [Rackful::Request] request
+
+  class GWDGJUUID < Generator
+
+    def to_rackful
+      {
+        'Description' => 'This generator uses JUUIDs to guarantee the uniqueness of created Handles.',
+        'Query parameters' => {
+          :prefix => 'Optional: a string of UTF-8 encoded printable unicode characters to put before the UUID.',
+          :suffix => 'Optional: a string of UTF-8 encoded printable unicode characters to put after the UUID.'
+        },
+      }
+    end
+
+    def generate request
+
+      unless USERS[request.env['REMOTE_USER']][:institute]
+        raise Rackful::HTTP403Forbidden, "No institute code is configured for your user."
+      end
+
+      prefix = request.GET['prefix'] || ''
+      suffix = request.GET['suffix'] || ''
+      prefix + java.util.UUID.randomUUID.to_s() + suffix
+    end
+
+  end # class GWDGJUUID < Generator
+
+
+
 
   # A generator that uses UUIDs to guarantee the uniqueness of created Handles.
   class UUID < Generator

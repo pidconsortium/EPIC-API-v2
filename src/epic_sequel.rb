@@ -13,6 +13,7 @@
 # limitations under the License.
 
 #~ require 'rubygems'
+require 'epic_debugger.rb'
 require 'sequel'
 require 'singleton'
 
@@ -30,19 +31,19 @@ class DB
 
 
   def pool
-    LOGGER.debug_method(self, caller)
+    Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:pool")
     @pool[self.sql_depth] ||= Sequel.connect(*SEQUEL_CONNECTION_ARGS)
   end
 
 
   def sql_depth
-    LOGGER.debug_method(self, caller)
+    Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:sql_depth")
     Thread.current[:epic_sql_depth] ||= 0
   end
 
 
   def sql_depth= n
-    LOGGER.debug_method(self, caller, n)
+    Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:sql:depth = "+n.to_s())
     Thread.current[:epic_sql_depth] = n.to_i
   end
 
@@ -59,7 +60,7 @@ class DB
 
 
   def each_handle( prefix = nil, limit = DEFAULT_LIMIT, page = 1 )
-    LOGGER.debug_method(self, caller, [prefix, limit, page])
+    Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:each_handle")
     if (page = page.to_i) < 1
       raise "parameter page must be greater than 0."
     end
@@ -83,7 +84,7 @@ class DB
 
 
   def each_handle_filtered( prefix, filter, limit = DEFAULT_LIMIT, page = 1 )
-    LOGGER.debug_method(self, caller, [prefix, filter, limit, page])
+    Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:each_handle_filtered")
     if (page = page.to_i) < 1
       raise "parameter page must be greater than 0."
     end
@@ -123,13 +124,13 @@ class DB
 
 
   def all_handle_values handle
-    LOGGER.debug_method(self, caller, handle)
+    Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:all_handle_values")
     begin
       myquery = self.pool[:handles].where( :handle => handle )
       ds = myquery.all
     rescue
       msg = "APPLICATION STOPPED: Cannot connect to database!"
-      LOGGER.fatal(msg)
+      Debugger.instance.log(msg)
       abort(msg)
     end  
     
@@ -138,7 +139,7 @@ class DB
 
   def uuid
     returnvalue = self.pool['SELECT UUID()'].get
-      LOGGER.debug("Extracting UUID: #{returnvalue} from database")
+      Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:Extracting UUID: #{returnvalue} from database")
     returnvalue
   end
 

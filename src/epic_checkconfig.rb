@@ -20,11 +20,9 @@ module EPIC
       "OPAQUE"=> "not_empty,is_string",
       "SEQUEL_CONNECTION_ARGS" => "is_defined",
       "DEFAULT_GENERATOR" => "not_empty,is_string",
-      "LOG_SETTINGS" => "not_empty,is_hash",
-      "LOG_SETTINGS[:log_level]" => "not_empty,is_string",
-      "LOG_SETTINGS[:log_path]" => "not_empty,is_string",
-      "LOG_SETTINGS[:max_log_mb]" => "not_empty,is_positiv_int",
-      "LOG_SETTINGS[:max_log_days]" => "not_empty,is_positiv_int"
+      "DEBUG_SETTINGS" => "not_empty,is_hash",
+      "DEBUG_SETTINGS[:debug_path]" => "not_empty,is_string",
+      "DEBUG_SETTINGS[:enabled]" => "is_bool",
       # TODO: ENFORCE_PROFILES
     }
 
@@ -65,6 +63,10 @@ module EPIC
       end
     end
 
+    def is_bool(entity)
+       !!entity == entity
+    end
+    
     def not_empty(entity)
       entity.size() > 0
     end

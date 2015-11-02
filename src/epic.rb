@@ -23,7 +23,7 @@ require 'epic_directory.rb'
 require 'epic_profile.rb'
 require 'epic_generator.rb'
 require 'epic_version.rb'
-require 'epic_logging.rb'
+require 'epic_debugger.rb'
 require '../config.rb'
 require '../secrets/users.rb'
 require 'singleton'
@@ -31,9 +31,6 @@ require 'singleton'
 # @todo Documentation
 module EPIC
 
-  # Make an Instance of the logger available through all modules.
-  # @todo I'm not sure if this is the best way to do it. See {Rack::Request.logger}.
-  LOGGER = Logging.instance()
   # Resource Factory for all our ReSTful resources.
   #
   # {Rackful::Server} requires a {Rackful::Server#resource_factory resource factory}. This
@@ -46,14 +43,14 @@ module EPIC
     include Singleton
 
     def initialize()
-      LOGGER.info("EPIC API Server started.")
-      LOGGER.warn("No profiles specified in Config. EPIC API will run with default behaviour.") unless defined?(ENFORCED_PROFILES)
+      Debugger.instance.debug("EPIC API Server started.")
+      Debugger.instance.debug("No profiles specified in Config. EPIC API will run with default behaviour.") unless defined?(ENFORCED_PROFILES)
     end
 
     # Can be called by tainted resources, to be removed from the cache.
     # @return [self]
     def uncache path
-      LOGGER.debug_method(self, caller, path)
+      Debugger.instance.debug("epic.rb:#{__LINE__}:uncache resource")
       resource_cache.delete path.to_s.unslashify
       self
     end
@@ -62,7 +59,7 @@ module EPIC
     # @return [Resource, nil]
     # @see Rackful::Server#resource_factory for details
     def [] path
-      LOGGER.debug_method(self, caller, path)
+      Debugger.instance.debug("epic.rb:#{__LINE__}:dispatching resource")
       path = path.to_path unless Rackful::Path == path.class
       path.unslashify!
       segments = path.segments
@@ -78,7 +75,7 @@ module EPIC
       n = segments.length
       resource_cache[path] =
       if 0 === n
-        LOGGER.info_httpevent("GET all available paths", "GET")
+        Debugger.instance.debug("epic.rb:#{__LINE__}:GET all available paths | GET")
         StaticCollection.new(
         '/', [
           'handles/',
@@ -90,38 +87,38 @@ module EPIC
         )
       elsif 'handles' === segments[0]
         if 1 === n
-          LOGGER.info_httpevent("GET all prefixes in system", "GET")
+          Debugger.instance.debug("epic.rb:#{__LINE__}:GET all prefixes in system | GET")
           NAs.new( path.slashify )
         elsif %r{\A\d+\z} === segments[1]
           if 2 === n
-            LOGGER.info_httpevent("GET a list of all handles for an prefix", "GET")
+            Debugger.instance.debug("epic.rb:#{__LINE__}:GET a list of all handles for an prefix | GET")
             Handles.new( path.slashify )
           elsif 3 === n
-            LOGGER.info_httpevent("GET a specific handle", "GET")
+            Debugger.instance.debug("epic.rb:#{__LINE__}:GET a specific handle | GET")
             Handle.new path
           end
         end
       elsif 'generators' === segments[0]
         if 1 === n
-          LOGGER.info_httpevent("GET a list of all available generators" , "GET")
+          Debugger.instance.debug("epic.rb:#{__LINE__}:GET a list of all available generators | GET")
           StaticCollection.new(path.slashify, Generator.generators.keys)
         elsif 2 === n
-          LOGGER.info_httpevent("GET description of a generator", "GET")
+          Debugger.instance.debug("epic.rb:#{__LINE__}:GET description of a generator | GET")
           generator = Generator.generators[segments[1]]
           generator && generator.new( path )
         end
       elsif 'profiles' === segments[0]
         if 1 === n
-          LOGGER.info_httpevent("GET a list of all available profiles", "GET")
+          Debugger.instance.debug("epic.rb:#{__LINE__}:GET a list of all available profiles | GET")
           StaticCollection.new(path.slashify, Profile.profiles.keys)
         else
-          LOGGER.info_httpevent("GET description of a profile", "GET")
+          Debugger.instance.debug("epic.rb:#{__LINE__}:GET description of a profile | GET")
           profile = Profile.profiles[segments[1]]
           profile && profile.new( path )
         end
       elsif 'version' === segments[0]
         if 1 === n
-          LOGGER.info_httpevent("GET version", "GET")
+          Debugger.instance.debug("epic.rb:#{__LINE__}:GET version | GET")
           Version.new path
         end
       end

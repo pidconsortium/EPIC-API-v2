@@ -1,4 +1,4 @@
-#\ --port 9003 --server mizuno
+#\ --host YOUR_IP --port YOUR_PORT --server mizuno
 
 =begin License
   Copyright ©2011-2012 Pieter van Beek <pieterb@sara.nl>
@@ -19,9 +19,6 @@
 
 $LOAD_PATH.unshift 'src'
 require 'epic.rb'
-# Initialize Logging
-require 'epic_logging.rb'
-LOGGER = EPIC::Logging.instance()
 
 
 # The default configuration uses Rack::Chunked to allow streaming of response
@@ -38,9 +35,17 @@ use Rack::Chunked
 # This works _most_ of the time, but can lead to unexpected results too...
 # If you're debugging the service, make sure you don't accidentally chase
 # phantom bugs introduced by dynamically reloading source files!
-require 'rack/reloader'
-use Rack::Reloader, 1
 
+###<<<<<<<<<<<<<<<<<<<<<<------PERFORMANCE-------->>>>>>>>>>>>>>>>>>>>>>####
+##									  ##
+## 		ACTIVATING THIS LEADS TO 				  ##
+##		PERIODICALLY RELOAD OF ALL 				  ##
+## 		SOURCES AT PERFORMANCE'S EXPENSE			  ##
+##									  ##  
+##		#require 'rack/reloader'				  ##
+##		#use Rack::Reloader, 1				          ##
+##									  ##
+######----------------------------------------------------------------######
 
 # Check the documentation. This is just an optional bit of optimization.
 use Rack::Sendfile
@@ -93,10 +98,6 @@ use Rack::Auth::Basic do
         [ username, EPIC::REALM, password ] * ':'
       ).to_s
     )
-  # TODO: I think the following 3 lines are redundant, because rack already logs this. --PvB
-  unless result
-  	LOGGER.warn("Unauthorized. #{username} provided wrong password/username.")
-  end
   result
 end
 

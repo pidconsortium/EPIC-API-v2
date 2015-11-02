@@ -12,15 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'epic_debugger.rb'
 require 'epic_resource.rb'
-require 'epic_logging.rb'
 require '../config.rb'
 
 module EPIC
   class Profile < Resource
     
-    # Initialize Logging
-    LOGGER = EPIC::Logging.instance()
     
     # @api private
     # @return [Hash{ String(prefix) => Hash{ String(name) => Profile } }]
@@ -43,10 +41,10 @@ module EPIC
       ENFORCED_PROFILES.each do |config_profile_name|
         if config_profile_name.upcase == profile_name.upcase
           self.profiles[profile_name] = childclass
-          LOGGER.info("Profile activated: #{profile_name}.")
+          Debugger.instance.debug("epic_profile.rb:#{__LINE__}:Profile activated: #{profile_name}.")
           if profile_name == "nodelete"
             NO_DELETE.each do |suffix|
-              LOGGER.info("Profile: nodelete protects Handles under the Suffix: #{suffix} from being deleted.")
+              Debugger.instance.debug("epic_profile.rb:#{__LINE__}:Profile: nodelete protects Handles under the Suffix: #{suffix} from being deleted.")
             end
           end
           break
@@ -124,7 +122,7 @@ module EPIC
       def self.delete( request, prefix, suffix, old_values )
         if NO_DELETE.include? prefix
           message = "Enforcing nodelete-Profile. Deletion of handles is deactivated for the Prefix #{prefix}."
-          LOGGER.warn(message)
+          Debugger.instance.log(message)
           raise Rackful::HTTP403Forbidden, message
         end
       end
@@ -183,7 +181,7 @@ module EPIC
         # React on failed inst_checks
         unless inst_check_passed 
           message = "Enforcing GWDGID-Profile. Handle update blocked, as the #{username} requested a handle with a missmatching Institute-Code"
-          LOGGER.info(message)
+          Debugger.instance.log(message)
           raise Rackful::HTTP403Forbidden, message
         end
         new_values
@@ -195,7 +193,7 @@ module EPIC
         # Check if a insitute code is available in the config
         if USERS[request.env['REMOTE_USER']][:institute].nil?
           message = "Enforcing GWDGID-Profile. No Insitute-Code set for user #{request.env['REMOTE_USER']}. Request blocked with Error 403 - Forbidden."
-          LOGGER.warn(message)
+          Debugger.instance.log(message)
           raise Rackful::HTTP403Forbidden, message
         end
       end
@@ -215,7 +213,7 @@ module EPIC
         inst_record.type = 'INST'
         inst_record.parsed_data = inst_number
         values << inst_record
-        LOGGER.info("Enforcing GWDGID-Profile. Institute-Code #{inst_number} appended to Handle.")
+        Debugger.instance.debug("epic_profile.rb:#{__LINE__}:Enforcing GWDGID-Profile. Institute-Code #{inst_number} appended to Handle.")
         values
       end
     

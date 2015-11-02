@@ -29,16 +29,11 @@ module EPIC
     :single_threaded => false
   ]
   
-  LOG_SETTINGS = {
-    # Supported Log-Levels are (DEBUG, ERROR, FATAL, INFO, WARN)
-    :log_level => 'error',
-    # Path to Log-File
-    :log_path => '/tmp/epic_log.txt',
-    # Define the maximum size of the log file in megabyte. 0 means no limit.
-    :max_log_mb => 100,
-    # Define the number of days for retention. 0 means no limit.
-    :max_log_days => 0
+  DEBUG_SETTINGS  = {
+      :debug_path => '/tmp/epic_debugging',
+      :enabled => false
   }
+
   
   # Mark special prefixes for which handles cannot be deleted, if the policy
   # "nodelete" is enforced. this is a regular expression
@@ -59,11 +54,11 @@ module EPIC
 
   # Define the generated used to create suffixes. The default is 'uuid". An
   # other method is "gwdgpid". It goes together with the profile "gwdgpid".
-  DEFAULT_GENERATOR = 'uuid'
+  DEFAULT_GENERATOR = 'juuid'
 
   # The version number of this release:
-  VERSION='2.3'
+  VERSION='2.5'
   # And a link to more information about this version:
-  VERSION_URL='https://github.com/CatchPlus/EPIC-API-v2/issues?milestone=10&state=closed'
+  VERSION_URL='https://github.com/pidconsortium/EPIC-API-v2'
 
 end

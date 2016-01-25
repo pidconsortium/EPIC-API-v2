@@ -126,7 +126,7 @@ class DB
   def all_handle_values handle
     Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:all_handle_values")
     begin
-      myquery = self.pool[:handles].where( :handle => handle )
+      myquery = self.pool[:handles].where( :handle => handle ).exclude(:type => "HS_SECKEY")
       ds = myquery.all
     rescue
       msg = "APPLICATION STOPPED: Cannot connect to database!"

@@ -9,6 +9,7 @@ We end up with a system with: hsj 8 and ePIC API v2.5.
 The plan is:
 
 1. create backups as the user who runs the handle software and the ePIC API. An example is:
+
         # su - <handle_user>
         $ cp -a .handle .handle.org
         $ cp -a <directory_with_handle_config> <directory_with_handle_config.org>
@@ -33,7 +34,7 @@ Use your own procedures to stop the handle server. An example is:
 
 
 4. install the handle software as the user "root".
-Untar the handle software on place of your choosing. An example is:
+Untar the handle software in the place of your choosing. An example is:
 
         # cd /opt
         # tar -tvzf /tmp/hsj-8.1.0.tgz
@@ -74,7 +75,7 @@ Add the export of parameter ```HANDLE_SVR=<directory_with_handle_config>```in st
 9. modify your handle startup procedure as the user "root" for shutdown. 
 Modify the stop command to delete a file ```<directory_with_handle_config>/delete_this_to_stop_server```. This will nicely stop the server.
 
-10. modify <directory_with_handle_config>/config.dct for the new version of handle server as the user who runs the handle software and the ePIC API.
+10. modify ```<directory_with_handle_config>/config.dct``` for the new version of handle server as the user who runs the handle software and the ePIC API.
 The release notes state what to change. From the release notes: "bind_address", "backlog", and "max_handlers", which were previously required, can now be omitted and will be given sensible defaults. More info is in the release notes.
 
 11. create a new directory for java servlets as the user who runs the handle software and the ePIC API.
@@ -137,8 +138,15 @@ The Handle server delivers a certificate taken from the serverCertificate.pem fi
 To replace this with a proper certificate, do the following (based on a CentOS installation):
 
 Convert your certificate to serverCertificate.pem:
+
         $ openssl x509 -in /etc/pki/tls/certs/<your .crt> -out serverCertificate.pem -outform pem
+
 Convert certificate private key to pkcs8 format:
+
         $ openssl pkcs8 -in /etc/pki/tls/private/<your key file> -out serverCertificatePrivateKey.pem -inform pem -nocrypt -topk8
+
 Convert to Handle binary key format using hdl-convert-key:
+
         $ ../hsj-8.1.0/bin/hdl-convert-key serverCertificatePrivateKey.pem serverCertificatePrivateKey.bin
+
+

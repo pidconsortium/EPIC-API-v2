@@ -295,8 +295,8 @@ routed/proxied to the ePIC web service.
 At this point, you should be able to start the web service. The "CLASSPATH" has
  been found needed with ePIC API v2.5, hsj v8 and newer OS versions:
 
-	$ for jarfile in $HOME/epic_v2_prod_<prefix>/hsj/*.jar ; do CP=${CP}:${jarfile}; done
-	$ export CLASSPATH=$CLASSPATH:$CP
+        $ for jarfile in $HOME/epic_v2_prod_<prefix>/hsj/*.jar ; do CP=${CP}:${jarfile}; done
+        $ export CLASSPATH=$CLASSPATH:$CP
         $ rackup
 
 By default, this will start a mizuno web server, listening to port 9292.

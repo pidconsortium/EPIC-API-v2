@@ -50,7 +50,7 @@ Untar the handle software in the place of your choosing. An example is:
 
 
 6. install the new ePIC api as the user who runs the handle software and the ePIC API. Use git commands or whatever you like to update the installation of the ePIC API.
-Perform an update in <directory_with_epic_installation>.
+Perform an update in ```<directory_with_epic_installation>```.
 
 7. update the link to hsj library files as the user who runs the handle software and the ePIC API.
 An example is:

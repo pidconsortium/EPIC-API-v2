@@ -13,8 +13,9 @@
 # limitations under the License.
 
 require 'java'
-require 'hsj/handle.jar'
-require 'hsj/cnriutil.jar'
+Dir[File.join(".", "hsj/*.jar")].each do |f|
+ require f
+end
 
 module EPIC
 

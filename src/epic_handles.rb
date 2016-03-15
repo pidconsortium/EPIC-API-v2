@@ -85,12 +85,20 @@ class Handles < Collection
     unless generator = request.resource_factory["/generators/#{generator_name}"]
       raise Rackful::HTTP400BadRequest, "No such generator: '#{generator_name}'"
     end
-    Debugger.instance.debug("epic_handles.rb:#{__LINE__}:creating PID | POST")
-    pid_suffix = escape_path( generator.generate( request ) )
-    handle = request.resource_factory["/handles/#{prefix}/#{pid_suffix}"]
+    generate_suffix = true
+    while(generate_suffix)
+      pid_suffix = escape_path( generator.generate( request ) )
+      Debugger.instance.debug("epic_handles.rb:#{__LINE__}:generating suffix")
+      handle = request.resource_factory["/handles/#{prefix}/#{pid_suffix}"]
+      if (handle.empty?)
+        Debugger.instance.debug("epic_handles.rb:#{__LINE__}:PID not exsiting #{pid_suffix}")
+        generate_suffix = false
+      else
+         Debugger.instance.debug("epic_handles.rb:#{__LINE__}:WARINING #{pid_suffix} IS EXISTING ... generate new one")
+      end
+    end
     handle.do_PUT( request, response )
   end
-
 
 end # class Handles
 

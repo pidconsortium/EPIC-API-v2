@@ -109,18 +109,16 @@ The following files need to be checked and updated:
         $ diff <directory_with_epic_installation>/config.ru <directory_with_epic_installation>/config.ru.example
 
 
-15. modify your epic startup procedure as the user "root" for startup. 
-
-16. start the ePIC api as user "root".
+15. start the ePIC api as user "root".
 Use your own procedures to start the ePIC API. An example is:
 
         # service epic status epic_v2_test_prod
         # service epic start epic_v2_test_prod
         # service epic status epic_v2_test_prod
 
-17. test the upgrade. Use your own procedures to test the upgrade.
+16. test the upgrade. Use your own procedures to test the upgrade.
 
-18. check your logfiles for errors and messages.
+17. check your logfiles for errors and messages.
 
 DONE!!!
 

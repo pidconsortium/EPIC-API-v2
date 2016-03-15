@@ -3,7 +3,7 @@
 The following document describes how to upgrade the handle software and ePIC API.
 
 We start with a system with: hsj 7 and ePIC API v2.3.
-We end up with a system with: hsj 8 and ePIC API v2.5.
+We end up with a system with: hsj 8 and ePIC API v2.5.1.
 
 
 The plan is:

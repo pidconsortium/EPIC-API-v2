@@ -89,7 +89,7 @@ module EPIC
         if 1 === n
           Debugger.instance.debug("epic.rb:#{__LINE__}:GET all prefixes in system | GET")
           NAs.new( path.slashify )
-        elsif %r{\A\d+\z} === segments[1]
+        elsif %r{\A\d+\z} === segments[1] or %r{\A21.\d+\z} === segments[1] or %r{\A21.T\d+\z} === segments[1]        
           if 2 === n
             Debugger.instance.debug("epic.rb:#{__LINE__}:GET a list of all handles for an prefix | GET")
             Handles.new( path.slashify )

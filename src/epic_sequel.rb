@@ -29,6 +29,15 @@ class DB
 
   DEFAULT_LIMIT = 1000
 
+   def check_and_reconnect
+     Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:check_and_reconnect")
+     @pool.each { |db_conn|
+       if (!db_conn.test_connection)
+         db_conn = Sequel.connect(*SEQUEL_CONNECTION_ARGS)
+         Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:RECONNECTED!!!")
+       end
+    }
+  end  
 
   def pool
     Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:pool")
@@ -55,11 +64,13 @@ class DB
 
 
   def all_nas
+    self.check_and_reconnect
     @all_nas ||= self.pool[:nas].select(:na).collect { |row| row[:na] }
   end
 
 
   def each_handle( prefix = nil, limit = DEFAULT_LIMIT, page = 1 )
+    self.check_and_reconnect
     Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:each_handle")
     if (page = page.to_i) < 1
       raise "parameter page must be greater than 0."
@@ -84,6 +95,7 @@ class DB
 
 
   def each_handle_filtered( prefix, filter, limit = DEFAULT_LIMIT, page = 1 )
+    self.check_and_reconnect
     Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:each_handle_filtered")
     if (page = page.to_i) < 1
       raise "parameter page must be greater than 0."
@@ -124,6 +136,7 @@ class DB
 
 
   def all_handle_values handle
+    self.check_and_reconnect
     Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:all_handle_values")
     begin
       myquery = self.pool[:handles].where( :handle => handle ).exclude(:type => "HS_SECKEY")
@@ -138,6 +151,7 @@ class DB
 
 
   def uuid
+    self.check_and_reconnect
     returnvalue = self.pool['SELECT UUID()'].get
       Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:Extracting UUID: #{returnvalue} from database")
     returnvalue
@@ -146,6 +160,7 @@ class DB
 
   # @return [Fixnum]
   def gwdgpidsequence
+    self.check_and_reconnect
     ### INSERT INTO `pidsequence` (`processID`) VALUE (NULL);
     ### SELECT LAST_INSERT_ID()
     ### SELECT AUTO_INCREMENT FROM information_schema.tables WHERE table_name = 'pidsequence';

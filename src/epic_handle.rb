@@ -338,7 +338,7 @@ module EPIC
       end.to_s
       retval = [ retval ].pack('H*')
        Debugger.instance.debug("epic_handle.rb:#{__LINE__}:Handle.get_etag sent HTTP-etag: " + "'" + Base64.strict_encode64(retval)[0..-3] + "' to client")
-       "'" + Base64.strict_encode64(retval)[0..-3] + "'"     
+       '"' + Base64.strict_encode64(retval)[0..-3] + '"'     
     end
   
   end # class Handle

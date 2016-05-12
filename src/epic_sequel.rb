@@ -29,14 +29,24 @@ class DB
 
   DEFAULT_LIMIT = 1000
 
+  # 6 hours
+  CON_LIFE_TIME = 1000.0*60*60*6  
+
    def check_and_reconnect
-     Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:check_and_reconnect")
-     @pool.each { |db_conn|
-       if (!db_conn.test_connection)
-         db_conn = Sequel.connect(*SEQUEL_CONNECTION_ARGS)
-         Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:RECONNECTED!!!")
+     Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:checking connection life time ...")
+     timediff = (Time.now - @last_connection_establishment)*1000.0
+     if (timediff > CON_LIFE_TIME)
+      Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:need to reconnect !!!")
+      @pool.each { |db_conn|
+       if (db_conn.test_connection)
+         db_conn.disconnect
+         Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:disconnected !!!")
        end
-    }
+      }
+      Debugger.instance.debug("epic_sequel.rb:#{__LINE__}: now establish a new connection ...")
+      self.pool
+      @last_connection_establishment = Time.now
+    end
   end  
 
   def pool
@@ -59,18 +69,17 @@ class DB
 
   def initialize
     @all_nas = nil
+    @last_connection_establishment = Time.now
     @pool = []
   end
 
 
   def all_nas
-    self.check_and_reconnect
     @all_nas ||= self.pool[:nas].select(:na).collect { |row| row[:na] }
   end
 
 
   def each_handle( prefix = nil, limit = DEFAULT_LIMIT, page = 1 )
-    self.check_and_reconnect
     Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:each_handle")
     if (page = page.to_i) < 1
       raise "parameter page must be greater than 0."
@@ -95,7 +104,6 @@ class DB
 
 
   def each_handle_filtered( prefix, filter, limit = DEFAULT_LIMIT, page = 1 )
-    self.check_and_reconnect
     Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:each_handle_filtered")
     if (page = page.to_i) < 1
       raise "parameter page must be greater than 0."
@@ -136,9 +144,9 @@ class DB
 
 
   def all_handle_values handle
-    self.check_and_reconnect
     Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:all_handle_values")
     begin
+      self.check_and_reconnect
       myquery = self.pool[:handles].where( :handle => handle ).exclude(:type => "HS_SECKEY")
       ds = myquery.all
     rescue

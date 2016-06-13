@@ -29,6 +29,25 @@ class DB
 
   DEFAULT_LIMIT = 1000
 
+  # 6 hours
+  CON_LIFE_TIME = 1000.0*60*60*6  
+
+   def check_and_reconnect
+     Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:checking connection life time ...")
+     timediff = (Time.now - @last_connection_establishment)*1000.0
+     if (timediff > CON_LIFE_TIME)
+      Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:need to reconnect !!!")
+      @pool.each { |db_conn|
+       if (db_conn.test_connection)
+         db_conn.disconnect
+         Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:disconnected !!!")
+       end
+      }
+      Debugger.instance.debug("epic_sequel.rb:#{__LINE__}: now establish a new connection ...")
+      self.pool
+      @last_connection_establishment = Time.now
+    end
+  end  
 
   def pool
     Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:pool")
@@ -50,6 +69,7 @@ class DB
 
   def initialize
     @all_nas = nil
+    @last_connection_establishment = Time.now
     @pool = []
   end
 
@@ -126,6 +146,7 @@ class DB
   def all_handle_values handle
     Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:all_handle_values")
     begin
+      self.check_and_reconnect
       myquery = self.pool[:handles].where( :handle => handle ).exclude(:type => "HS_SECKEY")
       ds = myquery.all
     rescue
@@ -138,6 +159,7 @@ class DB
 
 
   def uuid
+    self.check_and_reconnect
     returnvalue = self.pool['SELECT UUID()'].get
       Debugger.instance.debug("epic_sequel.rb:#{__LINE__}:Extracting UUID: #{returnvalue} from database")
     returnvalue
@@ -146,6 +168,7 @@ class DB
 
   # @return [Fixnum]
   def gwdgpidsequence
+    self.check_and_reconnect
     ### INSERT INTO `pidsequence` (`processID`) VALUE (NULL);
     ### SELECT LAST_INSERT_ID()
     ### SELECT AUTO_INCREMENT FROM information_schema.tables WHERE table_name = 'pidsequence';

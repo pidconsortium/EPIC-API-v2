@@ -57,7 +57,7 @@ module EPIC
   DEFAULT_GENERATOR = 'juuid'
 
   # The version number of this release:
-  VERSION='2.5.1'
+  VERSION='2.5.2'
   # And a link to more information about this version:
   VERSION_URL='https://github.com/pidconsortium/EPIC-API-v2'
 

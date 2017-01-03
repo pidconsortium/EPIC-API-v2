@@ -154,7 +154,7 @@ applications in Ruby. By wrapping HTTP requests and responses in the simplest
 way possible, it unifies and distills the API for web servers, web frameworks,
 and software in between (the so-called middleware) into a single method call.
 Also see http://rack.github.com/. 
-You will need a verion 1.6.5 Rack since newer version are not compatible anymore.
+You will need a version 1.6.5 Rack since newer version are not compatible anymore.
 
         # jruby -S gem install  rack -v 1.6.5  
 
@@ -163,7 +163,7 @@ mizuno are a pair of Jetty-powered running shoes for JRuby/Rack.
 
 ### Json_pure
 This is a JSON implementation in pure Ruby.
-You will need a verion 2.0.1 Json_pure since newer version are not compatible anymore.
+You will need a version 2.0.1 Json_pure since newer version are not compatible anymore.
 
         # jruby -S gem install  json_pure -v 2.0.1
 

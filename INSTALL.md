@@ -172,7 +172,7 @@ You will need a version 2.0.1 Json_pure since newer version are not compatible a
 Choice is a simple little gem for easily defining and parsing command line
 options with a friendly DSL.
 
-   # jruby -S gem install  sequel jdbc-mysql mizuno choice childprocess ffi 
+        # jruby -S gem install  sequel jdbc-mysql mizuno choice childprocess ffi 
 
 
 ### Rackful

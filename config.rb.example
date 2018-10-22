@@ -30,7 +30,7 @@ module EPIC
   ]
   
   DEBUG_SETTINGS  = {
-      :debug_path => '/tmp/epic_debugging',
+      :debug_base_path => '/tmp/epic_debugging',
       :enabled => false
   }
 

@@ -154,18 +154,25 @@ applications in Ruby. By wrapping HTTP requests and responses in the simplest
 way possible, it unifies and distills the API for web servers, web frameworks,
 and software in between (the so-called middleware) into a single method call.
 Also see http://rack.github.com/. 
+You will need a version 1.6.5 Rack since newer version are not compatible anymore.
+
+        # jruby -S gem install  rack -v 1.6.5  
 
 ### Mizuno
 mizuno are a pair of Jetty-powered running shoes for JRuby/Rack.
 
 ### Json_pure
 This is a JSON implementation in pure Ruby.
+You will need a version 2.0.1 Json_pure since newer version are not compatible anymore.
+
+        # jruby -S gem install  json_pure -v 2.0.1
+
 
 ### Choice
 Choice is a simple little gem for easily defining and parsing command line
 options with a friendly DSL.
 
-        # jruby -S gem install  sequel jdbc-mysql rack mizuno json_pure choice childprocess ffi 
+        # jruby -S gem install  sequel jdbc-mysql mizuno choice childprocess ffi 
 
 
 ### Rackful

@@ -4,12 +4,12 @@ module EPIC
 
 class Debugger
 
-    attr_reader :debug_path, :enabled
+   attr_reader :debug_base_path, :enabled
       
    include Singleton
  
    def initialize
-        @debug_path = DEBUG_SETTINGS[:debug_path]
+        @debug_base_path = DEBUG_SETTINGS[:debug_base_path]
         @enabled = DEBUG_SETTINGS[:enabled]
    end
   
@@ -24,8 +24,8 @@ class Debugger
         else
                 output_msg = "initialization..."
         end
-
-	open(@debug_path, 'a') { |dfile|  dfile.puts output_msg }
+        debug_path = @debug_base_path+"-"+Time.now.strftime("%Y%m%d")
+	open(debug_path, 'a') { |dfile|  dfile.puts output_msg }
    end
 
    def debug(msg)
@@ -39,8 +39,9 @@ class Debugger
    		output_msg = "initialization..."
   	end
    	
+        debug_path = @debug_base_path+"-"+Time.now.strftime("%Y%m%d")
 	if @enabled == true
-        	  open(@debug_path, 'a') { |dfile|  dfile.puts output_msg }
+        	  open(debug_path, 'a') { |dfile|  dfile.puts output_msg }
      	end
 
    end
